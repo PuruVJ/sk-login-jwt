@@ -1,7 +1,13 @@
 import { sql } from '$lib/db';
 import { hashPassword } from '$lib/hash-password';
 import { invalid, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ locals, cookies }) => {
+	if (locals.user) {
+		throw redirect(303, '/');
+	}
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
