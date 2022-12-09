@@ -1,4 +1,4 @@
-import { sql } from '$lib/db';
+import { ensureUsersTable, sql } from '$lib/db';
 import { hashPassword } from '$lib/hash-password';
 import { invalid, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
@@ -22,6 +22,9 @@ export const actions: Actions = {
 		if (!password) return invalid(400, { missingPassword: true });
 
 		const hashedPassword = await hashPassword(password);
+
+		// Ensure users table exists
+		await ensureUsersTable();
 
 		// Now register the user
 		const queryResults = await sql<
