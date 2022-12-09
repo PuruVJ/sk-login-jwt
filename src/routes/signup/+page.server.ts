@@ -1,6 +1,6 @@
 import { sql } from '$lib/db';
 import { hashPassword } from '$lib/hash-password';
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {
@@ -17,9 +17,9 @@ export const actions: Actions = {
 		const email = data.get('email')?.toString();
 		const password = data.get('password')?.toString() ?? '';
 
-		if (!username) return invalid(400, { username, missingUsername: true });
-		if (!email) return invalid(400, { email, missingEmail: true });
-		if (!password) return invalid(400, { missingPassword: true });
+		if (!username) return fail(400, { username, missingUsername: true });
+		if (!email) return fail(400, { email, missingEmail: true });
+		if (!password) return fail(400, { missingPassword: true });
 
 		const hashedPassword = await hashPassword(password);
 

@@ -2,7 +2,7 @@ import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import { sql } from '$lib/db';
 import { hashPassword } from '$lib/hash-password';
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -19,7 +19,7 @@ export const actions: Actions = {
 		const email = data.get('email')?.toString();
 		const password = data.get('password')?.toString() ?? '';
 
-		if (!email) return invalid(400, { email, missing: true });
+		if (!email) return fail(400, { email, missing: true });
 
 		const hashedPassword = await hashPassword(password);
 
@@ -29,7 +29,7 @@ export const actions: Actions = {
 
 		if (queryResults.length === 0) {
 			// No user exists
-			return invalid(400, { email, incorrect: true });
+			return fail(400, { email, incorrect: true });
 		}
 
 		const user = queryResults[0];
